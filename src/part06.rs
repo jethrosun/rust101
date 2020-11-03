@@ -17,7 +17,17 @@ impl BigInt {
             other
         } else {
             // **Exercise 06.1**: Fill in this code.
-            unimplemented!()
+            for idx in self.data.len()..0 {
+                println!("{}", idx);
+                if self.data[idx] < other.data[idx] {
+                    return self;
+                } else if self.data[idx] > other.data[idx] {
+                    return other;
+                } else {
+                    continue;
+                }
+            }
+            self
         }
     }
 }
@@ -29,26 +39,28 @@ fn vec_min(v: &Vec<BigInt>) -> Option<BigInt> {
     // `iter`, the iterator that borrows the elements.
     for e in v {
         let e = e.clone();
-        unimplemented!()
+        min = Some(match min {
+            Some(n) => e.min_try1(n),
+            None => e,
+        });
     }
     min
 }
 
 // ## `Copy` types
 
-use part02::{SomethingOrNothing,Something,Nothing};
+use part02::{Nothing, Something, SomethingOrNothing};
 impl<T: Copy> Copy for SomethingOrNothing<T> {}
 
-
 // ## Lifetimes
-
 fn head<T>(v: &Vec<T>) -> Option<&T> {
     if v.len() > 0 {
-        unimplemented!()
+        Some(&v[0])
     } else {
         None
     }
 }
+
 // Technically, we are returning a pointer to the first element. But doesn't that mean that callers
 // have to be careful? Imagine `head` would be a C++ function, and we would write the following
 // code.
@@ -64,5 +76,3 @@ fn rust_foo(mut v: Vec<i32>) -> i32 {
     /* v.push(42); */
     *first.unwrap()
 }
-
-
