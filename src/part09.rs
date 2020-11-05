@@ -50,9 +50,10 @@ fn print_digits_v1(b: &BigInt) {
     loop {
         // Each time we go through the loop, we analyze the next element presented by the iterator
         // - until it stops.
-                    match iter.next() {
+        match iter.next() {
             None => break,
-            Some(digit) => println!("{}", digit)
+            Some(digit) => println!("{}", digit),
+        }
     }
 }
 
