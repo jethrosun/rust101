@@ -1,9 +1,8 @@
 // Rust-101, Part 08: Associated Types, Modules
 // ============================================
 
-use std::{cmp,ops};
 use part05::BigInt;
-
+use std::{cmp, ops};
 
 // So, let us write a function to "add with carry", and give it the appropriate type. Notice Rust's
 // native support for pairs.
@@ -15,28 +14,30 @@ fn overflowing_add(a: u64, b: u64, carry: bool) -> (u64, bool) {
     if sum >= a {
         // The addition did not overflow. <br/>
         // **Exercise 08.1**: Write the code to handle adding the carry in this case.
-        unimplemented!()
+        // FIXME: what is this?
+        let sum_total = sum.wrapping_add(if carry { 1 } else { 0 });
+        let had_overflow = sum_total < sum;
+        (sum_total, had_overflow)
     } else {
         // Otherwise, the addition *did* overflow. It is impossible for the addition of the carry
         // to overflow again, as we are just adding 0 or 1.
-        unimplemented!()
+        (sum + if carry { 1 } else { 0 }, true)
     }
 }
 
 // `overflow_add` is a sufficiently intricate function that a test case is justified.
 // This should also help you to check your solution of the exercise.
-/*#[test]*/
+#[test]
 fn test_overflowing_add() {
     assert_eq!(overflowing_add(10, 100, false), (110, false));
     assert_eq!(overflowing_add(10, 100, true), (111, false));
     assert_eq!(overflowing_add(1 << 63, 1 << 63, false), (0, true));
     assert_eq!(overflowing_add(1 << 63, 1 << 63, true), (1, true));
-    assert_eq!(overflowing_add(1 << 63, (1 << 63) -1 , true), (0, true));
+    assert_eq!(overflowing_add(1 << 63, (1 << 63) - 1, true), (0, true));
 }
 
 // ## Associated Types
 impl ops::Add<BigInt> for BigInt {
-
     // Here, we choose the result type to be again `BigInt`.
     type Output = BigInt;
 
@@ -45,17 +46,24 @@ impl ops::Add<BigInt> for BigInt {
         // We know that the result will be *at least* as long as the longer of the two operands,
         // so we can create a vector with sufficient capacity to avoid expensive reallocations.
         let max_len = cmp::max(self.data.len(), rhs.data.len());
-        let mut result_vec:Vec<u64> = Vec::with_capacity(max_len);
+        let mut result_vec: Vec<u64> = Vec::with_capacity(max_len);
         let mut carry = false; /* the current carry bit */
         for i in 0..max_len {
             let lhs_val = if i < self.data.len() { self.data[i] } else { 0 };
             let rhs_val = if i < rhs.data.len() { rhs.data[i] } else { 0 };
             // Compute next digit and carry. Then, store the digit for the result, and the carry
             // for later.
-            unimplemented!()
+            // unimplemented!()
+            // FIXME:
+            let (sum, new_carry) = overflowing_add(lhs_val, rhs_val, carry);
+            result_vec.push(sum);
+            carry = new_carry;
         }
         // **Exercise 08.2**: Handle the final `carry`, and return the sum.
-        unimplemented!()
+        if carry {
+            result_vec.push(1);
+        }
+        BigInt { data: result_vec }
     }
 }
 
@@ -83,7 +91,7 @@ impl<'a, 'b> ops::Add<&'a BigInt> for &'b BigInt {
 mod tests {
     use part05::BigInt;
 
-    /*#[test]*/
+    #[test]
     fn test_add() {
         let b1 = BigInt::new(1 << 32);
         let b2 = BigInt::from_vec(vec![0, 1]);
@@ -96,4 +104,3 @@ mod tests {
 // **Exercise 08.6**: Write a subtraction function, and testcases for it. Decide for yourself how
 // you want to handle negative results. For example, you may want to return an `Option`, to panic,
 // or to return `0`.
-

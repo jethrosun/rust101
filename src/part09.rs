@@ -3,7 +3,6 @@
 
 use part05::BigInt;
 
-
 pub struct Iter<'a> {
     num: &'a BigInt,
     idx: usize, // the index of the last number that was returned
@@ -18,10 +17,11 @@ impl<'a> Iterator for Iter<'a> {
         // First, check whether there's any more digits to return.
         if self.idx == 0 {
             // We already returned all the digits, nothing to do.
-            unimplemented!()
+            None
         } else {
             // Otherwise: Decrement, and return next digit.
-            unimplemented!()
+            self.idx -= 1;
+            Some(self.num.data[self.idx])
         }
     }
 }
@@ -29,7 +29,10 @@ impl<'a> Iterator for Iter<'a> {
 // All we need now is a function that creates such an iterator for a given `BigInt`.
 impl BigInt {
     fn iter(&self) -> Iter {
-        unimplemented!()
+        Iter {
+            num: self,
+            idx: self.data.len(),
+        }
     }
 }
 
@@ -47,7 +50,9 @@ fn print_digits_v1(b: &BigInt) {
     loop {
         // Each time we go through the loop, we analyze the next element presented by the iterator
         // - until it stops.
-        unimplemented!()
+                    match iter.next() {
+            None => break,
+            Some(digit) => println!("{}", digit)
     }
 }
 
@@ -59,7 +64,7 @@ fn print_digits_v2(b: &BigInt) {
 }
 
 // **Exercise 09.1**: Write a testcase for the iterator, making sure it yields the corrects numbers.
-// 
+//
 // **Exercise 09.2**: Write a function `iter_ldf` that iterates over the digits with the
 // least-significant digits coming first. Write a testcase for it.
 
@@ -69,7 +74,7 @@ fn iter_invalidation_demo() {
     let mut b = BigInt::new(1 << 63) + BigInt::new(1 << 16) + BigInt::new(1 << 63);
     for digit in b.iter() {
         println!("{}", digit);
-        /*b = b + BigInt::new(1);*/                                 /* BAD! */
+        /*b = b + BigInt::new(1);*/ /* BAD! */
     }
 }
 
@@ -83,4 +88,3 @@ impl<'a> IntoIterator for &'a BigInt {
     }
 }
 // With this in place, you can now replace `b.iter()` in `main` by `&b`. Go ahead and try it! <br/>
-
