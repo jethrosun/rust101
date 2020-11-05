@@ -38,5 +38,6 @@ fn main() {
     // part03::main(); // FIXME:
 
     // part09::main();
-    part10::main();
+    // part10::main();
+    part11::main();
 }

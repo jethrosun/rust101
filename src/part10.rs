@@ -33,7 +33,7 @@ impl Action for PrintWithString {
 
 // Finally, this function takes a `BigInt` and a prefix, and prints the digits with the given prefix.
 fn print_with_prefix_v1(b: &BigInt, prefix: String) {
-    let my_action = PrintWithString { prefix: prefix };
+    let my_action = PrintWithString { prefix };
     b.act_v1(my_action);
 }
 
@@ -72,7 +72,7 @@ pub fn print_and_count(b: &BigInt) {
     let mut count: usize = 0;
     b.act(|digit| {
         println!("{}: {}", count, digit);
-        count = count + 1;
+        count += 1;
     });
     println!("There are {} digits", count);
 }
@@ -81,7 +81,7 @@ pub fn print_and_count(b: &BigInt) {
 
 // Let's say we want to write a function that increments every entry of a `Vec` by some number,
 // then looks for numbers larger than some threshold, and prints them.
-fn inc_print_threshold(v: &Vec<i32>, offset: i32, threshold: i32) {
+fn inc_print_threshold(v: &[i32], offset: i32, threshold: i32) {
     for i in v.iter().map(|n| *n + offset).filter(|n| *n > threshold) {
         println!("{}", i);
     }
@@ -89,14 +89,14 @@ fn inc_print_threshold(v: &Vec<i32>, offset: i32, threshold: i32) {
 
 // Sometimes it is useful to know both the position of some element in a list, and its value.
 // That's where the `enumerate` function helps.
-fn print_enumerated<T: fmt::Display>(v: &Vec<T>) {
+fn print_enumerated<T: fmt::Display>(v: &[T]) {
     for (i, t) in v.iter().enumerate() {
         println!("Position {}: {}", i, t);
     }
 }
 
 // And as a final example, one can also collect all elements of an iterator, and put them, e.g., in a vector.
-fn filter_vec_by_divisor(v: &Vec<i32>, divisor: i32) -> Vec<i32> {
+fn filter_vec_by_divisor(v: &[i32], divisor: i32) -> Vec<i32> {
     v.iter().map(|n| *n).filter(|n| *n % divisor == 0).collect()
 }
 
